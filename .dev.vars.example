@@ -1,0 +1,4 @@
+NEXTJS_ENV=development
+AUTH_SECRET=replace-with-a-long-random-secret
+AUTH_TRUST_HOST=true
+NEXTAUTH_URL=http://localhost:3000

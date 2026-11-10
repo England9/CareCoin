@@ -40,3 +40,13 @@ Open [http://localhost:3000](http://localhost:3000).
 - Seeded demo data: 25+ charities, events, ~80 volunteers
 
 Demo rewards do **not** process real payouts or shipments.
+
+## Deploy to Cloudflare
+
+Full Next.js hosting uses **Workers** (OpenNext), not static Pages.
+
+```bash
+npm run deploy
+```
+
+See **[CLOUDFLARE.md](./CLOUDFLARE.md)** for dashboard build/deploy settings, D1, and secrets.
