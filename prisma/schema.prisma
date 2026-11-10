@@ -1,0 +1,224 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String   @id @default(cuid())
+  email               String   @unique
+  passwordHash        String
+  name                String
+  role                String   @default("VOLUNTEER") // VOLUNTEER | CHARITY | ADMIN
+  avatarUrl           String?
+  bio                 String?
+  city                String?
+  state               String?
+  lat                 Float?
+  lng                 Float?
+  isDemo              Boolean  @default(false)
+  coins               Int      @default(0)
+  lifetimeCoins       Int      @default(0)
+  totalHours          Float    @default(0)
+  trashLbs            Float    @default(0)
+  eventsAttended      Int      @default(0)
+  streakDays          Int      @default(0)
+  level               Int      @default(1)
+  shareDemographics   Boolean  @default(false)
+  shareApproxLocation Boolean  @default(true)
+  ageRange            String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  charity             Charity?
+  signups             EventSignup[]
+  attendances         Attendance[]
+  achievements        UserAchievement[]
+  coinTransactions    CoinTransaction[]
+  redemptions         Redemption[]
+  disputes            Dispute[]         @relation("DisputeVolunteer")
+  reviewedDisputes    Dispute[]         @relation("DisputeReviewer")
+  verifiedAttendances Attendance[]      @relation("AttendanceVerifier")
+}
+
+model Charity {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  name        String
+  description String
+  website     String?
+  logoUrl     String?
+  status      String   @default("PENDING") // PENDING | APPROVED | REJECTED
+  sdgs        String
+  city        String
+  state       String
+  lat         Float
+  lng         Float
+  isDemo      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  events Event[]
+}
+
+model Event {
+  id              String   @id @default(cuid())
+  charityId       String
+  title           String
+  description     String
+  sdg             Int
+  address         String
+  city            String
+  state           String
+  lat             Float
+  lng             Float
+  startAt         DateTime
+  endAt           DateTime
+  hoursRequired   Float
+  baseCoinReward  Int
+  topCoinBonus    Int      @default(0)
+  geofenceRadiusM Int      @default(150)
+  isSponsored     Boolean  @default(false)
+  maxVolunteers   Int      @default(50)
+  category        String
+  isDemo          Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  charity     Charity        @relation(fields: [charityId], references: [id], onDelete: Cascade)
+  signups     EventSignup[]
+  attendances Attendance[]
+}
+
+model EventSignup {
+  id        String   @id @default(cuid())
+  eventId   String
+  userId    String
+  createdAt DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+}
+
+model Attendance {
+  id               String    @id @default(cuid())
+  eventId          String
+  userId           String
+  status           String    @default("REGISTERED")
+  checkInAt        DateTime?
+  checkOutAt       DateTime?
+  checkInLat       Float?
+  checkInLng       Float?
+  checkOutLat      Float?
+  checkOutLng      Float?
+  hoursVerified    Float?
+  trashLbsVerified Float?
+  coinsAwarded     Int       @default(0)
+  verifiedById     String?
+  verifiedAt       DateTime?
+  notes            String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  event      Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  verifiedBy User?     @relation("AttendanceVerifier", fields: [verifiedById], references: [id])
+  disputes   Dispute[]
+
+  @@unique([eventId, userId])
+}
+
+model Achievement {
+  id          String @id @default(cuid())
+  code        String @unique
+  name        String
+  description String
+  icon        String
+  threshold   Float
+  metric      String
+
+  users UserAchievement[]
+}
+
+model UserAchievement {
+  id            String   @id @default(cuid())
+  userId        String
+  achievementId String
+  unlockedAt    DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+}
+
+model Reward {
+  id          String  @id @default(cuid())
+  name        String
+  description String
+  category    String // CASH | PHYSICAL
+  coinCost    Int
+  imageEmoji  String
+  imageColor  String
+  isDemo      Boolean @default(true)
+  available   Boolean @default(true)
+  sortOrder   Int     @default(0)
+
+  redemptions Redemption[]
+}
+
+model Redemption {
+  id        String   @id @default(cuid())
+  userId    String
+  rewardId  String
+  coinCost  Int
+  status    String   @default("PENDING")
+  isDemo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reward Reward @relation(fields: [rewardId], references: [id], onDelete: Cascade)
+}
+
+model CoinTransaction {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Int
+  reason    String
+  meta      String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Dispute {
+  id           String   @id @default(cuid())
+  attendanceId String
+  volunteerId  String
+  reason       String
+  status       String   @default("OPEN")
+  resolution   String?
+  reviewerId   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  attendance Attendance @relation(fields: [attendanceId], references: [id], onDelete: Cascade)
+  volunteer  User       @relation("DisputeVolunteer", fields: [volunteerId], references: [id])
+  reviewer   User?      @relation("DisputeReviewer", fields: [reviewerId], references: [id])
+}
+
+model CommunityStat {
+  id               String   @id @default("global")
+  totalHours       Float    @default(0)
+  totalTrashLbs    Float    @default(0)
+  totalEvents      Int      @default(0)
+  totalVolunteers  Int      @default(0)
+  totalCoinsEarned Int      @default(0)
+  updatedAt        DateTime @updatedAt
+}

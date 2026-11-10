@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #eef8f4;
+  --bg-deep: #d8efe6;
+  --ink: #0b2e2b;
+  --teal: #0d7377;
+  --teal-dark: #095456;
+  --mint: #b8e6d5;
+  --gold: #e8b84a;
+  --coral: #e07a5f;
+  --sand: #f7f1e6;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  color: var(--ink);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(232, 184, 74, 0.18), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(13, 115, 119, 0.16), transparent 50%),
+    linear-gradient(180deg, #f3fbf8 0%, #e8f4ef 42%, #f7f1e6 100%);
+  background-attachment: fixed;
+}
+
+.font-display {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-body {
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+}
+
+.atmosphere {
+  background-image:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.35), transparent 40%),
+    radial-gradient(circle at 20% 20%, rgba(184, 230, 213, 0.55), transparent 45%),
+    radial-gradient(circle at 80% 10%, rgba(232, 184, 74, 0.22), transparent 40%);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(13, 115, 119, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+.hero-plane {
+  background:
+    linear-gradient(105deg, rgba(9, 84, 86, 0.82), rgba(13, 115, 119, 0.55) 45%, rgba(224, 122, 95, 0.35)),
+    url("data:image/svg+xml,%3Csvg width='160' height='160' viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.08'%3E%3Cpath d='M0 80h160M80 0v160'/%3E%3Ccircle cx='80' cy='80' r='40'/%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(160deg, #0d7377, #1a9a8b 55%, #e07a5f);
+  background-size: cover, 120px 120px, cover;
+}
+
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.floaty {
+  animation: floaty 4s ease-in-out infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+.coin-shine {
+  background: linear-gradient(90deg, #f6d365, #fda085, #f6d365);
+  background-size: 200% 100%;
+  animation: shine 3s linear infinite;
+}
+
+.leaflet-container {
+  font: inherit;
+}
