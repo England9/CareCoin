@@ -59,10 +59,14 @@ curl -X POST "https://care-coin.<your-subdomain>.workers.dev/api/seed" \
 | Setting | Value |
 |---------|--------|
 | Framework preset | None / Workers |
+| Production branch | `cursor/care-coin-mvp-65f7` (or `main` after merge) |
 | Build command | `npx opennextjs-cloudflare build` |
 | Deploy command | `npx opennextjs-cloudflare deploy` |
 | Root directory | `/` (repo root) |
 | Node version | `20` or `22` |
+| Worker name | `carecoin` (must match `wrangler.jsonc` → `name` + `WORKER_SELF_REFERENCE`) |
+
+Do **not** use Build=`npm run build` + Deploy=`npx wrangler deploy` — that skips the committed OpenNext config and recreates a mismatched Worker name.
 
 ### Build variables & secrets
 

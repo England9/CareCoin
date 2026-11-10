@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "care-coin",
+  "name": "carecoin",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-11-10",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
@@ -14,10 +14,11 @@
       "enabled": true
     }
   },
+  // Must match "name" exactly — your CF project is "carecoin", not "care-coin"
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "care-coin"
+      "service": "carecoin"
     }
   ],
   "d1_databases": [
