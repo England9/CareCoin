@@ -1,0 +1,32 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "carecoin",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-10",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true,
+    "traces": {
+      "enabled": true
+    }
+  },
+  // Must match "name" exactly — your CF project is "carecoin", not "care-coin"
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "carecoin"
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "care-coin-db",
+      "database_id": "f239a1cb-0758-42b3-bd4c-771e7fc59800",
+      "migrations_dir": "prisma/d1-migrations"
+    }
+  ]
+}
